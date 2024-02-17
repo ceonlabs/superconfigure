@@ -20,6 +20,10 @@ include lib/openssl/BUILD.mk
 include lib/pcre/BUILD.mk
 include lib/readline/BUILD.mk
 include lib/boost/BUILD.mk
+include lib/jemalloc/BUILD.mk
+include lib/protobuf/BUILD.mk
+include lib/thrift/BUILD.mk
+include lib/arrow/BUILD.mk
 
 lib:\
 	o/lib/gdbm/built.fat\
@@ -40,7 +44,11 @@ lib:\
 	o/lib/libssh2/built.fat\
 	o/lib/pcre/built.fat\
 	o/lib/readline/built.fat\
-	o/lib/boost/built.fat
+	o/lib/boost/built.fat\
+	o/lib/jemalloc/built.fat\
+	o/lib/protobuf/built.fat\
+	o/lib/thrift/built.fat\
+	o/lib/arrow/built.fat
 
 # o/lib/libffi/built.fat
 

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+EXTRA_B2="architecture=arm address-model=64"
+COSMOCXXFLAGS=${COSMOCXXFLAGS:-"-fexceptions -frtti"}
+HOST_COSMOCXX=$COSMO/cosmocc/bin/aarch64-unknown-cosmoc++
+
+CFLAGS="-DMADV_FREE=MADV_FREE"
+ARCH_IS_BIG_ENDIAN=yes
+if [ "$ARCH" == "aarch64" ]; then
+    ARCH_IS_BIG_ENDIAN=no
+fi
+
+
+
+
+BACK=`pwd`
+cd ../../jemalloc*
+
+CXXFLAGS="$COSMOCXXFLAGS" ac_cv_c_bigendian=$ARCH_IS_BIG_ENDIAN ./configure \
+        --prefix="$COSMOS" \
+        --enable-static \
+        --host="$ARCH" \
+        --with-lg-page=16
+sed -i 's/define JEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE/undef JEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE/g' include/jemalloc/internal/jemalloc_internal_defs.h
+# Avoid building the shared library
+make build_lib_static
+make install_lib_static install_bin install_include
+
+
+cd $BACK
