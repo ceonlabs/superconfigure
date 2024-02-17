@@ -1,5 +1,5 @@
 
-TMUX_SRC := https://github.com/tmux/tmux/archive/refs/tags/3.3a.tar.gz 
+TMUX_SRC := https://nunez.co/build/tmux-3.3a.tar.gz 
 TMUX_DEPS := lib/ncurses lib/libevent
 
 $(eval $(call DOWNLOAD_SOURCE,cli/tmux,$(TMUX_SRC)))

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+EXTRA_B2="architecture=arm address-model=64"
+COSMOCXXFLAGS=${COSMOCXXFLAGS:-"-fexceptions -frtti"}
+HOST_COSMOCXX=$COSMO/cosmocc/bin/aarch64-unknown-cosmoc++
+BACK=`pwd`
+cd ../../boost*
+./tools/build/src/engine/build.sh -cxx="$HOST_COSMOCXX" --cxxflags="$COSMOCXXFLAGS" gcc
+cp ./tools/build/src/engine/b2 .
+./bootstrap.sh --prefix="$COSMOS" --with-libraries=filesystem,system --with-toolset=gcc --with-bjam=./b2
+# Replace errno enums with inline const variables
+sed -i -e 'H;$!d;x;s/^\n//' -e "s/enum errc_t\s*{[^}]*};/enum errc_t{success=0};$(sed -n -r 's/^\s+([A-Za-z0-9_]+) = (E[0-9A-Z]+),*/inline const errc_t \1=(errc_t)\2;/gp' ./boost/system/detail/errc.hpp | tr -d "\n")/" ./boost/system/detail/errc.hpp
+# Remove constexpr from an errno-based constant
+sed -i -r "s/BOOST_CONSTEXPR_OR_CONST err_t/const err_t/" ./libs/filesystem/src/directory.cpp
+# Tell the project config file about cosmo compilers
+echo 'using gcc : cosmo : '$CXX' : <cxxflags>"'$COSMOCXXFLAGS'" <archiver>"'$AR'" ;'$'\n'"$(cat project-config.jam)" > project-config.jam
+./b2 install --prefix="$COSMOS" $EXTRA_B2 toolset=gcc-cosmo link=static runtime-link=static
+cd $BACK

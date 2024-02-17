@@ -1,5 +1,5 @@
 
-ZLIB_SRC := https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.gz 
+ZLIB_SRC := https://nunez.co/build/zlib-1.3.tar.gz
 
 ZLIB_CONFIG_ARGS = --static --64 --prefix=$$(COSMOS)\
     --includedir=$$(COSMOS)/include\

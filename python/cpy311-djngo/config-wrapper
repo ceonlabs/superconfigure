@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+rm -rf ./djngo
+cp -r "$BASELOC"/o/python/cpy311-djngo/djngo ./
+cd djngo
+
+./configure --disable-shared --disable-loadable-sqlite-extensions\
+    --with-lto=no --without-system-expat --without-system-ffi\
+    --with-pymalloc --with-openssl="$COSMOS"/ssl\
+    --with-tzpath=/zip/usr/share/zoneinfo\
+    --prefix="$COSMOS"\
+    CFLAGS="-Os -I$COSMOS/include -I$COSMOS/include/ncurses -I$COSMOS/include/uuid -I$COSMOS/include/sdl2"
+
+# run make and/or make install
+make V=0 -s -j"$MAXPROC"
+mkdir -p dummy
+cp -r build/lib* ./dummy
+cp ./python "$COSMOS"/bin/djngo

@@ -48,6 +48,18 @@ build-clean: zipclean
 	find o -name 'installed.aarch64' -delete
 	find o -name 'built.fat' -delete
 
+fast-clean: zipclean
+	find cosmos -type f -delete
+	rm -rf results/bin results/libexec
+	find o -name 'x86_64' | grep 'build/x86_64' | xargs rm -rf
+	find o -name 'aarch64' | grep 'build/aarch64' | xargs rm -rf
+	find o -name 'built.x86_64' -delete
+	find o -name 'built.aarch64' -delete
+	find o -name 'installed.x86_64' -delete
+	find o -name 'installed.aarch64' -delete
+	find o -name 'built.fat' -delete
+
+
 distclean: clean zipclean
 	git clean -f -d -x
 

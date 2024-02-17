@@ -1,0 +1,37 @@
+#!/bin/sh
+set -e
+
+apelinkpls () {
+    OUTPUT="$1"
+    OLDNAME_X86_64="$(basename -- "$2")"
+    OLDNAME_AARCH64="$(basename -- "$3")"
+    TARG_FOLD="$(dirname "$OUTPUT")"
+    "$APELINK" -l "$COSMO/o/x86_64/ape/ape.elf" \
+        -l "$COSMO/o/aarch64/ape/ape.elf" \
+        -M "$COSMO/ape/ape-m1.c" \
+        -o "$OUTPUT" \
+        "$2" \
+        "$3"
+    cp "$2" "$TARG_FOLD/$OLDNAME_X86_64.x86_64"
+    cp "$3" "$TARG_FOLD/$OLDNAME_AARCH64.aarch64"
+}
+
+# djngo
+apelinkpls "$RESULTS"/bin/djngo.com "$COSMOS_X86_64"/bin/djngo "$COSMOS_AARCH64"/bin/djngo
+cd /zip
+
+mkdir -p djngo && cd djngo
+unzip -qo "$BASELOC"/o/python/cpy311-djngo/build/x86_64/djngo/python.com || true
+
+mkdir -p build
+cp -r "$BASELOC"/o/python/cpy311-djngo/build/aarch64/djngo/dummy/lib* ./build || true
+cp -r "$BASELOC"/o/python/cpy311-djngo/build/x86_64/djngo/dummy/lib* ./build || true
+ls -al build/
+
+zip -qr "$RESULTS"/bin/djngo.com Lib/
+zip -qr "$RESULTS"/bin/djngo.com build/
+
+cd /zip
+zip -qr "$RESULTS"/bin/djngo.com .
+cd "$BASELOC"
+rm -rf /zip/djngo

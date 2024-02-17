@@ -24,7 +24,6 @@ cli: \
 	o/cli/make/built.fat \
 	o/cli/ninja/built.fat \
 	o/cli/sed/built.fat \
-	o/cli/tmux/built.fat \
 	o/cli/zsh/built.fat
 
 .PHONY: cli
